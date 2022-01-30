@@ -7,6 +7,7 @@ defmodule Teachbase.Courses do
   alias Teachbase.Repo
 
   alias Teachbase.Courses.Lesson
+  alias Teachbase.Accounts.User
 
   @doc """
   Returns the list of lessons.
@@ -18,7 +19,7 @@ defmodule Teachbase.Courses do
 
   """
   def list_lessons do
-    Repo.all(from l in Lesson, preload: [:teacher])
+    Repo.all(from l in Lesson, preload: [:teacher, :students])
   end
 
   @doc """
@@ -35,7 +36,11 @@ defmodule Teachbase.Courses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_lessons!(id), do: Lesson |> Repo.get!(id) |> Repo.preload(:teacher)
+  def get_lessons!(id) do
+    Lesson
+    |> Repo.get!(id)
+    |> Repo.preload([:teacher, :students])
+  end
 
   @doc """
   Creates a lessons.
@@ -100,5 +105,73 @@ defmodule Teachbase.Courses do
   """
   def change_lessons(%Lesson{} = lessons, attrs \\ %{}) do
     Lesson.changeset(lessons, attrs)
+  end
+
+  @doc """
+  Attaches student to a lesson.
+  """
+  @spec attach_student_to_lesson(lesson :: %Lesson{}, student :: %User{}) :: any()
+  def attach_student_to_lesson(lesson, student) do
+    lesson
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:students, [student | lesson.students])
+    |> Repo.update!()
+  end
+
+  @doc """
+  Returns a list of students by teacher.
+  """
+  @spec list_students_by_teacher(teacher :: %User{}) :: any()
+  def list_students_by_teacher(teacher) do
+    query =
+      from lesson in Lesson,
+        where: lesson.teacher_id == ^teacher.id,
+        join: user in assoc(lesson, :students),
+        select: user
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns a list of lessons by attached students count.
+  """
+  @spec list_lessons_by_students_count(count :: non_neg_integer()) :: any()
+  def list_lessons_by_students_count(count) do
+    query =
+      from lesson in Lesson,
+        join: user in assoc(lesson, :students),
+        group_by: [lesson.id],
+        having: count(user.id) > ^count,
+        select: lesson
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Finds and returns a list of lessons by name.
+  """
+  @spec list_lessons_by_name(template :: binary()) :: any()
+  def list_lessons_by_name(template) do
+    query =
+      from lesson in Lesson,
+        where: like(lesson.name, ^template),
+        select: lesson
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns a list of lessons if name or description matches the input text.
+  """
+  @spec list_lessons_with_text(text :: binary()) :: any()
+  def list_lessons_with_text(text) do
+    template = "%#{text}%"
+
+    query =
+      from lesson in Lesson,
+        where: like(lesson.name, ^template) or like(lesson.description, ^template),
+        select: lesson
+
+    Repo.all(query)
   end
 end

@@ -40,7 +40,7 @@ defmodule TeachbaseWeb.LessonsControllerTest do
                "id" => ^id,
                "description" => "some description",
                "name" => "some name",
-               "reference" => "some reference",
+               "reference" => "some reference"
              } = json_response(conn, 200)["data"]
     end
 
@@ -63,7 +63,7 @@ defmodule TeachbaseWeb.LessonsControllerTest do
                "id" => ^id,
                "description" => "some updated description",
                "name" => "some updated name",
-               "reference" => "some updated reference",
+               "reference" => "some updated reference"
              } = json_response(conn, 200)["data"]
     end
 

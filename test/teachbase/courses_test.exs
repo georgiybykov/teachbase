@@ -21,7 +21,12 @@ defmodule Teachbase.CoursesTest do
     end
 
     test "create_lessons/1 with valid data creates a lessons" do
-      valid_attrs = %{description: "some description", name: "some name", reference: "some reference", teacher: Teachbase.AccountsFixtures.valid_user_attributes()}
+      valid_attrs = %{
+        description: "some description",
+        name: "some name",
+        reference: "some reference",
+        teacher: Teachbase.AccountsFixtures.valid_user_attributes()
+      }
 
       assert {:ok, %Lesson{} = lessons} = Courses.create_lessons(valid_attrs)
       assert lessons.description == "some description"
@@ -35,7 +40,12 @@ defmodule Teachbase.CoursesTest do
 
     test "update_lessons/2 with valid data updates the lessons" do
       lessons = lessons_fixture()
-      update_attrs = %{description: "some updated description", name: "some updated name", reference: "some updated reference"}
+
+      update_attrs = %{
+        description: "some updated description",
+        name: "some updated name",
+        reference: "some updated reference"
+      }
 
       assert {:ok, %Lesson{} = lessons} = Courses.update_lessons(lessons, update_attrs)
       assert lessons.description == "some updated description"
