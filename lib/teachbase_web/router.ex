@@ -21,6 +21,8 @@ defmodule TeachbaseWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    live "/search", SearchLive
   end
 
   # Other scopes may use custom stacks.
@@ -95,5 +97,4 @@ defmodule TeachbaseWeb.Router do
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
   end
-
 end

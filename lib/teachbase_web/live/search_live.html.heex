@@ -1,0 +1,22 @@
+<h1 align="center">Search</h1>
+
+<form phx-change="search">
+  <input type="text" name="text" value={@text} autofocus/>
+</form>
+
+<div id="lessons">
+  <%= for lesson <- @lessons do %>
+    <div id={"lesson-#{lesson.id}"}>
+      <p>
+        <b>Name:</b> <%= lesson.name %>
+      </p>
+      <p>
+        <b>Description:</b> <%= lesson.description %>
+      </p>
+      <p>
+        <b>Reference:</b> <%= lesson.reference %>
+      </p>
+      <hr>
+    </div>
+  <% end %>
+</div>

@@ -14,7 +14,8 @@ defmodule Teachbase.CoursesFixtures do
         description: "some description",
         name: "some name",
         reference: "some reference",
-        teacher: Teachbase.AccountsFixtures.valid_user_attributes()
+        teacher: Teachbase.AccountsFixtures.valid_user_attributes(),
+        students: [Teachbase.AccountsFixtures.valid_user_attributes()]
       })
       |> Teachbase.Courses.create_lessons()
 
